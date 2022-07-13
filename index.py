@@ -4,48 +4,95 @@ import pyttsx3
 import wave
 import json
 import os
+import webbrowser
+from datetime import date
 
-def play_greetings():
-	return
+def play_greetings(*args: tuple):
+	if args[0]:
+		print('play_greetings')
+	else:
+		pass
 
-def play_farewell_and_quit():
-	return
+def time_to_quit(*args: tuple):
+	if args[0]:
+		today = date.today()
+		d1 = date(2022, 9, 9)
+		delta = d1 - today
+		play_voice_assistant_speech("Nicolas il te reste exactement " + delta + "jours avant ton départ")
+	else:
+		pass
 
 def search_for_term_on_youtube(*args: tuple):
-	if not args[0]: 
-		return 
+	if args[0]: 
 		search_term = " ".join(args[0])
+		print(search_term)
 		url = "https://www.youtube.com/results?search_query=" + search_term
 		webbrowser.get().open(url)
 		play_voice_assistant_speech("Here is what I found for " + search_term + "on youtube")
+	else:
+		pass
 
-def search_for_term_on_google():
-	return
-def search_fordefinition_on_wikipedia():
-	return
-def get_translation():
-	return
-def change_language():
-	return
-def get_weather_forecast():
-	return
+def search_for_term_on_google(*args: tuple):
+	if args[0]:
+		print('google')
+	else:
+		pass
+
+def search_fordefinition_on_wikipedia(*args: tuple):
+	if args[0]:
+		print('wikipedia')
+	else:
+		pass
+
+
+def get_translation(*args: tuple):
+	if args[0]:
+		print('translate')
+	else:
+		pass
+
+def change_language(*args: tuple):
+	if args[0]:
+		print('change')
+	else:
+		pass
+
+def get_weather_forecast(*args: tuple):
+	if args[0]:
+		print('weather')
+	else:
+		pass
+
+def takeNote(*args: tuple):
+	if args[0]:
+		fileDir = os.getcwd()
+		noteFile = open(fileDir+"\\copy.txt", "a")
+		for line in args:
+			essai = str(line).strip('[]')
+			essai1 = essai.replace(",","")
+			essai2 = essai1.replace("'","")
+			noteFile.write(essai2)
+	else:
+		pass
+
+
 commands = {
-		("hello", "hi", "morning", ""): play_greetings,
-		("bye", "goodbye", "quit", "exit", "stop", ""): play_farewell_and_quit
-,
-("search", "google", "find", ""): search_for_term_on_google,
-("video", "youtube", "watch", ""): search_for_term_on_youtube,
-("wikipedia", "definition", "about", "", ""): search_fordefinition_on_wikipedia,
-("translate", "interpretation", "translation", "","",""): get_translation,
-("language", ""): change_language,
-("weather", "forecast", "", ""): get_weather_forecast,}
+	("hello", "hi", "morning", ""): play_greetings,
+	("bye", "salut", "au revoir", "exit", "stop", ""): time_to_quit,
+	("search", "google", "find", ""): search_for_term_on_google,
+	("video", "youtube", "watch", "voir"): search_for_term_on_youtube,
+	("wikipedia", "definition", "about", "", ""): search_fordefinition_on_wikipedia,
+	("translate", "interpretation", "translation", "", "", ""): get_translation,
+	("language", ""): change_language,
+	("weather", "forecast", "", ""): get_weather_forecast,
+	("note", "noter", "", ""): takeNote
+}
 
 class VoiceAssistant:
 	name = ""
 	sex = ""
 	speech_language = ""
 	recognition_language = ""
-
 
 def setup_assistant_voice():
 	voices = ttsEngine.getProperty("voices")
@@ -58,7 +105,6 @@ def setup_assistant_voice():
 	else:
 		assistant.recognition_language = "fr-FR"
 		ttsEngine.setProperty("voice", voices[0].id)
-
 
 def play_voice_assistant_speech(text_to_speech):
 	ttsEngine.say(str(text_to_speech))
@@ -84,7 +130,7 @@ def record_and_recognize_audio(*args: tuple):
 		except speech_recognition.RequestError:
 			print("try to use offline recognition...")
 			recognized_data = use_offline_recognition()
-			return recognized_data
+		return recognized_data
 
 def use_offline_recognition():
 	recognized_data = ""
@@ -103,7 +149,7 @@ def use_offline_recognition():
 				recognized_data = recognized_data["text"]
 	except:
 		print("Speech service is unavailable, try later")
-		return recognized_data
+	return recognized_data
 		
 def execute_command_with_name(command_name: str, *args: list):
 	for key in commands.keys():
@@ -111,7 +157,6 @@ def execute_command_with_name(command_name: str, *args: list):
 			commands[key](*args)
 		else:
 			pass
-
 
 if __name__ == "__main__":
 	recognizer = speech_recognition.Recognizer()
@@ -125,7 +170,6 @@ if __name__ == "__main__":
 	while True:
 		voice_input = record_and_recognize_audio()
 		os.remove("microphone-results.wav")
-		print(voice_input)
 		voice_input = voice_input.split(" ")
 		command = voice_input[0]
 		command_options = [str(input_part) for input_part in voice_input[1:len(voice_input)]]
