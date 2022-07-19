@@ -18,7 +18,7 @@ def time_to_quit(*args: tuple):
 		today = date.today()
 		d1 = date(2022, 9, 9)
 		delta = d1 - today
-		play_voice_assistant_speech("Nicolas il te reste exactement " + delta + "jours avant ton départ")
+		play_voice_assistant_speech("Nicolas il te reste exactement " + str(delta) + "jours avant ton départ")
 	else:
 		pass
 
@@ -38,9 +38,13 @@ def search_for_term_on_google(*args: tuple):
 	else:
 		pass
 
-def search_fordefinition_on_wikipedia(*args: tuple):
-	if args[0]:
-		print('wikipedia')
+def search_fordefinition_on_findchip(*args: tuple):
+	if args[0]: 
+		search_term = " ".join(args[0])
+		print(search_term)
+		url = "https://www.findchips.com/search/" + search_term
+		webbrowser.get().open(url)
+		play_voice_assistant_speech("Here is what I found for " + search_term + "on findchip")
 	else:
 		pass
 
@@ -81,7 +85,7 @@ commands = {
 	("bye", "salut", "au revoir", "exit", "stop", ""): time_to_quit,
 	("search", "google", "find", ""): search_for_term_on_google,
 	("video", "youtube", "watch", "voir"): search_for_term_on_youtube,
-	("wikipedia", "definition", "about", "", ""): search_fordefinition_on_wikipedia,
+	("findchip", "chercher", "composant", "find", ""): search_fordefinition_on_findchip,
 	("translate", "interpretation", "translation", "", "", ""): get_translation,
 	("language", ""): change_language,
 	("weather", "forecast", "", ""): get_weather_forecast,
